@@ -1,3 +1,5 @@
+from datetime import datetime
+from pathlib import Path
 from quiz import Quiz
 
 # Menu options
@@ -73,6 +75,8 @@ def main():
 
     print("Quiz is finished! Final leaderboard below:")
     print(quiz)
+    filepath = Path("data") / f"quiz_{datetime.now().strftime('%Y%m%d_%H:%M')}"
+    quiz.save(filepath)
 
 
 if __name__ == "__main__":

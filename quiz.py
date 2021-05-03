@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List, Optional
 from pandas import DataFrame
 
@@ -51,3 +52,7 @@ class Quiz:
         df.loc["Total"] = df.sum()
         df = df.T.sort_values(by=["Total"], ascending=False).astype(int)
         return df
+
+    def save(self, path: Path):
+        df = self.full_leaderboard()
+        df.to_csv(path)
