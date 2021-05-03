@@ -1,5 +1,10 @@
 from quiz import Quiz
 
+# Menu options
+DISPLAY_LEADERBOARD = 1
+ENTER_SCORES = 2
+QUIT = 3
+
 
 def update_player_score(quiz: Quiz, player: str, round_num: int) -> None:
     """Updates the leaderboard with the score for a given player and round_number."""
@@ -31,15 +36,40 @@ def initialise_quiz() -> Quiz:
         return quiz
 
 
+def get_menu_option(round_num: int) -> int:
+    """Displays the menu to the user and returns the selected menu option"""
+    prompt = f"""
+    Select from the menu options below
+    {DISPLAY_LEADERBOARD}. Display leaderboard.
+    {ENTER_SCORES}. Enter scores for round {round_num}
+    {QUIT}. Exit the program.
+    """
+    s = input(prompt)
+    try:
+        opt = int(s)
+        if opt not in (DISPLAY_LEADERBOARD, ENTER_SCORES, QUIT):
+            raise ValueError
+    except ValueError:
+        print(f"Error: '{s}' is not a valid menu option")
+        return get_menu_option(round_num)
+    else:
+        return opt
+
+
 def main():
     quiz = initialise_quiz()
     while quiz.current_round is not None:
         _round = quiz.current_round
-        for player in quiz.players:
-            update_player_score(quiz, player, _round)
+        opt = get_menu_option(_round)
 
-        print(f"Scores after round {_round} below:")
-        print(quiz)
+        if opt == DISPLAY_LEADERBOARD:
+            print(f"Leaderboard after round {_round - 1}:")
+            print(quiz)
+        elif opt == ENTER_SCORES:
+            for player in quiz.players:
+                update_player_score(quiz, player, _round)
+        elif opt == QUIT:
+            print("Exiting quiz.")
 
     print("Quiz is finished! Final leaderboard below:")
     print(quiz)

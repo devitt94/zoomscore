@@ -24,9 +24,8 @@ class Quiz:
             return unfinished_rounds.index[0]
 
     def __str__(self):
-        totals = self.__leaderboard.sum().astype(int)
-        totals = totals.sort_values(ascending=False)
-        return "\n".join(str(totals).split("\n")[:-1])
+        df = self.full_leaderboard()
+        return str(df)
 
     def add_score(self, player_name: str, score: int):
         """Adds given score for given player to the current active round
@@ -44,3 +43,11 @@ class Quiz:
 
         self.__leaderboard.loc[self.current_round, player_name] = score
 
+    def full_leaderboard(self) -> DataFrame:
+        """Returns a dataframe representation of the current leaderboard, sorted by total score descending and with
+        player names as row indexes and round numbers as columns """
+        df = self.__leaderboard.copy(deep=True)
+        df = df.dropna(how="all")
+        df.loc["Total"] = df.sum()
+        df = df.T.sort_values(by=["Total"], ascending=False).astype(int)
+        return df
