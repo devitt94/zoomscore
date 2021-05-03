@@ -42,6 +42,25 @@ class QuizTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.quiz.add_score("Player1", 4)
 
+    def test_full_leaderboard(self):
+        self.quiz.add_score("Player1", 5)
+        self.quiz.add_score("Player2", 3)
+        self.quiz.add_score("Player3", 4)
+        self.quiz.add_score("Player4", 2)
+        self.quiz.add_score("Player1", 4)
+        self.quiz.add_score("Player2", 2)
+        self.quiz.add_score("Player3", 3)
+        self.quiz.add_score("Player4", 1)
+
+        expected_values = [
+            [5, 4, 9],
+            [4, 3, 7],
+            [3, 2, 5],
+            [2, 1, 3],
+        ]
+        leaderboard = self.quiz.full_leaderboard()
+        self.assertEqual(leaderboard.values.tolist(), expected_values)
+
     def tearDown(self) -> None:
         del self.quiz
 
